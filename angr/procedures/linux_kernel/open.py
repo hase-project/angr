@@ -1,5 +1,7 @@
 import angr
 
+from ..posix import open as xopen
+
 ######################################
 # open
 ######################################
@@ -9,8 +11,7 @@ class open(angr.SimProcedure): #pylint:disable=W0622
 
     IS_SYSCALL = True
 
-    def run(self, path, flags):
-        fd = self.state.posix.open(path, flags)
-        if fd is None:
-            return -1
-        return fd
+    # FIXME: weird args length different when direct using posix.open(path, flags)
+    def run(self, path, flags, mode=0644):
+        ret_expr = self.inline_call(xopen.open, path, flags, mode).ret_expr
+        return ret_expr
