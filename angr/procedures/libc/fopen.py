@@ -6,8 +6,12 @@ from . import io_file_data_for_arch
 # fopen
 ######################################
 
+# NOTE: non-standard c/e flag for fopen
+# http://man7.org/linux/man-pages/man3/fopen.3.html#NOTES
 def mode_to_flag(mode):
     # TODO improve this: handle mode = strings
+    mode = mode.replace('c', '')
+    mode = mode.replace('e', '')
     if mode[-1] == 'b': # lol who uses windows
         mode = mode[:-1]
     all_modes = {

@@ -868,7 +868,7 @@ class SimFileDescriptorDuplex(SimFileDescriptorBase):
         super(SimFileDescriptorDuplex, self).set_state(state)
 
     def eof(self):
-        return claripy.false
+        return claripy.BoolS("duplex_eof")
 
     def tell(self):
         return None

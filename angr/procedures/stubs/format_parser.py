@@ -461,6 +461,10 @@ class FormatParser(SimProcedure):
         i = 0
         while i < len(fmt):
             if type(fmt[i]) is str and fmt[i] == "%":
+                # FIXME: %% support
+                if i + 1 < len(fmt) and type(fmt[i + 1]) is str and fmt[i + 1] == '%':
+                    components.append('%')
+                    i += 1
                 # Note that we only support concrete format specifiers
                 # grab the specifier
                 # go to the space
