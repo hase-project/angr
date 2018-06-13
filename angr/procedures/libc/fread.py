@@ -17,6 +17,8 @@ class fread(angr.SimProcedure):
         simfd = self.state.posix.get_fd(fd)
         if simfd is None:
             return -1
-
-        ret = simfd.read(dst, size * nm)
-        return self.state.se.If(self.state.se.Or(size == 0, nm == 0), 0, ret / size)
+        try:
+            ret = simfd.read(dst, size * nm)
+            return self.state.se.If(self.state.se.Or(size == 0, nm == 0), 0, ret / size)
+        except:
+            return self.state.se.BVS('fread', 32)

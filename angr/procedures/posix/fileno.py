@@ -21,9 +21,12 @@ class fileno(angr.SimProcedure):
 
         # Get FILE struct
         io_file_data = io_file_data_for_arch(self.state.arch)
-
-        # Get the file descriptor from FILE struct
-        fd = self.state.se.eval(self.state.memory.load(f + io_file_data['fd'],
-                                                          4 * 8,  # int
-                                                          endness=self.state.arch.memory_endness))
-        return fd
+        try:
+            # Get the file descriptor from FILE struct
+            fd = self.state.se.eval(self.state.memory.load(f + io_file_data['fd'],
+                                                            4 * 8,  # int
+                                                            endness=self.state.arch.memory_endness))
+            return fd
+        except:
+            # XXX: hase -> resymbolic
+            return self.state.se.BVS("fileno_fd", 32)

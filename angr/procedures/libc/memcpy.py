@@ -20,11 +20,15 @@ class memcpy(angr.SimProcedure):
         else:
             # constraints on the limit are added during the store
             max_memcpy_size = self.state.libc.max_memcpy_size
-            max_limit = self.state.se.max_int(limit)
-            conditional_size = max(self.state.se.min_int(limit), min(max_limit, max_memcpy_size))
-            if max_limit > max_memcpy_size and conditional_size < max_limit:
-                l.warning("memcpy upper bound of %#x outside limit, limiting to %#x instead",
-                          max_limit, conditional_size)
+            try:
+                max_limit = self.state.se.max_int(limit)
+                conditional_size = max(self.state.se.min_int(limit), min(max_limit, max_memcpy_size))
+                if max_limit > max_memcpy_size and conditional_size < max_limit:
+                    l.warning("memcpy upper bound of %#x outside limit, limiting to %#x instead",
+                            max_limit, conditional_size)
+            except:
+                # XXX: hase fallback
+                conditional_size = max_memcpy_size
 
         l.debug("Memcpy running with conditional_size %#x", conditional_size)
 
