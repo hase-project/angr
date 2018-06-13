@@ -17,9 +17,12 @@ class open(angr.SimProcedure): #pylint:disable=W0622
 
         p_strlen = self.inline_call(strlen, p_addr)
         p_expr = self.state.memory.load(p_addr, p_strlen.max_null_index, endness='Iend_BE')
-        path = self.state.se.eval(p_expr, cast_to=str)
+        try:
+            path = self.state.se.eval(p_expr, cast_to=str)
 
-        fd = self.state.posix.open(path, flags)
-        if fd is None:
-            return -1
-        return fd
+            fd = self.state.posix.open(path, flags)
+            if fd is None:
+                return -1
+            return fd
+        except:
+            return self.state.se.BVS("open", 32)

@@ -13,9 +13,12 @@ class read(angr.SimProcedure):
                                1: self.ty_ptr(SimTypeArray(SimTypeChar(), length)),
                                2: SimTypeLength(self.state.arch)}
         self.return_type = SimTypeLength(self.state.arch)
+        
+        try:
+            simfd = self.state.posix.get_fd(fd)
+            if simfd is None:
+                return -1
 
-        simfd = self.state.posix.get_fd(fd)
-        if simfd is None:
-            return -1
-
-        return simfd.read(dst, length)
+            return simfd.read(dst, length)
+        except:
+            return self.state.se.BVS('read', 32)

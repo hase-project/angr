@@ -35,9 +35,15 @@ class fopen(angr.SimProcedure):
 
         p_strlen = self.inline_call(strlen, p_addr)
         m_strlen = self.inline_call(strlen, m_addr)
+        print(p_strlen.max_null_index, m_strlen.max_null_index)
         p_expr = self.state.memory.load(p_addr, p_strlen.max_null_index, endness='Iend_BE')
         m_expr = self.state.memory.load(m_addr, m_strlen.max_null_index, endness='Iend_BE')
-        path = self.state.se.eval(p_expr, cast_to=str)
+        try:
+            path = self.state.se.eval(p_expr, cast_to=str)
+        except:
+            # XXX: fopen on unsat path does wrong on max_null_index
+            p_expr = self.state.memory.load(p_addr, endness='Iend_BE')
+            path = self.state.se.eval(p_expr, cast_to=str)
         mode = self.state.se.eval(m_expr, cast_to=str)
 
         # TODO: handle append

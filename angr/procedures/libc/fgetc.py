@@ -15,7 +15,11 @@ class fgetc(angr.SimProcedure):
         if simfd is None:
             fileno = angr.SIM_PROCEDURES['posix']['fileno']
             fd = self.inline_call(fileno, stream).ret_expr
-            simfd = self.state.posix.get_fd(fd)
+            try:
+                simfd = self.state.posix.get_fd(fd)
+            except:
+                # XXX: fileno may return symbolic value
+                return self.state.se.BVS("fgetc_char", 8)
 
         if simfd is None:
             return -1

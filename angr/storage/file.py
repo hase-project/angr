@@ -194,6 +194,7 @@ class SimFile(SimFileBase, SimSymbolicMemory):
     def read(self, pos, size, **kwargs):
         # Step 1: figure out a reasonable concrete size to use for the memory load
         # since we don't want to concretize anything
+        print(pos, size, kwargs)
         if self.state.solver.symbolic(size):
             try:
                 passed_max_size = self.state.solver.max(size, extra_constraints=(size < self.state.libc.max_packet_size,))
@@ -566,6 +567,7 @@ class SimFileDescriptorBase(SimStatePlugin):
         :param size:    The requested length of the read
         :return:        The real length of the read
         """
+        print('read base', pos, size)
         data, realsize = self.read_data(size, **kwargs)
         if not self.state.solver.is_true(realsize == 0):
             self.state.memory.store(pos, data, size=realsize)
