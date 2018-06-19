@@ -48,7 +48,10 @@ class memset(angr.SimProcedure):
 
         if self.state.solver.symbolic(num):
             l.debug("symbolic length")
-            max_size = self.state.solver.min_int(num) + self.state.libc.max_buffer_size
+            try:
+                max_size = self.state.solver.min_int(num) + self.state.libc.max_buffer_size
+            except:
+                max_size = self.state.libc.max_buffer_size
             write_bytes = self.state.solver.Concat(*([ char ] * max_size))
             self.state.memory.store(dst_addr, write_bytes, size=num)
         else:
