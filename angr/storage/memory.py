@@ -478,6 +478,7 @@ class SimMemory(SimStatePlugin):
         :param bool disable_actions: Whether this store should avoid creating SimActions or not. When set to False,
                                      state options are respected.
         """
+        l.debug('store ' + repr(addr) + ' ' + repr(data) + ' ' + repr(size) + '\n')
         if priv is not None: self.state.scratch.push_priv(priv)
 
         addr_e = _raw_ast(addr)
@@ -707,6 +708,7 @@ class SimMemory(SimStatePlugin):
 
             <A If(condition, BVV(0x41, 32), fallback)>
         """
+        l.debug('load ' + repr(addr) + ' ' + repr(size) + '\n')
         add_constraints = True if add_constraints is None else add_constraints
 
         addr_e = _raw_ast(addr)

@@ -768,6 +768,8 @@ class SimSymbolicMemory(SimMemory): #pylint:disable=abstract-method
         if condition is not None:
             try:
                 original_value = self._read_from(address, size)
+            except KeyboardInterrupt:
+                raise Exception("Manually stop")
             except Exception as ex:
                 raise ex
 
