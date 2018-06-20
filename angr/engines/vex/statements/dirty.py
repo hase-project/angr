@@ -14,7 +14,6 @@ class SimIRStmt_Dirty(SimIRStmt):
 
         if hasattr(dirty, self.stmt.cee.name):
             s_args = [ex.expr for ex in exprs]
-
             if o.ACTION_DEPS in self.state.options:
                 if len(exprs) == 0:
                     reg_deps = frozenset()

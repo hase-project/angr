@@ -26,6 +26,9 @@ class memcpy(angr.SimProcedure):
                 if max_limit > max_memcpy_size and conditional_size < max_limit:
                     l.warning("memcpy upper bound of %#x outside limit, limiting to %#x instead",
                             max_limit, conditional_size)
+                if conditional_size > max_memcpy_size:
+                    # FIXME: eval to -1
+                    conditional_size = min(max_limit, max_memcpy_size)
             except:
                 # XXX: hase fallback
                 conditional_size = max_memcpy_size
