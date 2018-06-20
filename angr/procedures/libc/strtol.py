@@ -6,7 +6,6 @@ from angr.errors import SimProcedureError
 import logging
 l = logging.getLogger("angr.procedures.libc.strtol")
 
-
 # note: this does not handle skipping white space
 
 class strtol(angr.SimProcedure):

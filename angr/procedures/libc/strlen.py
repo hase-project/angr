@@ -67,4 +67,5 @@ class strlen(angr.SimProcedure):
                     result = rresult
                 return result
         except:
+            self.max_null_index = self.state.libc.max_str_len
             return self.state.se.BVS('strlen', 64)

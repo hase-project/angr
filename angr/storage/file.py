@@ -199,12 +199,16 @@ class SimFile(SimFileBase, SimSymbolicMemory):
             try:
                 passed_max_size = self.state.solver.max(size, extra_constraints=(size < self.state.libc.max_packet_size,))
             except SimSolverError:
-                passed_max_size = self.state.solver.min(size)
+                try:
+                    passed_max_size = self.state.solver.min(size)
+                except:
+                    passed_max_size = self.state.libc.max_packet_size
                 l.warning("Symbolic read size is too large for threshold - concretizing to min (%d)", passed_max_size)
                 self.state.solver.add(size == passed_max_size)
         else:
             passed_max_size = self.state.solver.eval(size)
             if passed_max_size > 2**13:
+                passed_max_size = 2**13
                 l.warning("Program performing extremely large reads")
 
         # Step 2.1: check for the possibility of EOFs
@@ -591,12 +595,16 @@ class SimFileDescriptorBase(SimStatePlugin):
             try:
                 passed_max_size = self.state.solver.max(size, extra_constraints=(size < self.state.libc.max_packet_size,))
             except SimSolverError:
-                passed_max_size = self.state.solver.min(size)
+                try:
+                    passed_max_size = self.state.solver.min(size)
+                except:
+                    passed_max_size = self.state.libc.max_packet_size
                 l.warning("Symbolic write size is too large for threshold - concretizing to min (%d)", passed_max_size)
                 self.state.solver.add(size == passed_max_size)
         else:
             passed_max_size = self.state.solver.eval(size)
             if passed_max_size > 2**13:
+                passed_max_size = 2**13
                 l.warning("Program performing extremely large write")
 
         data = self.state.memory.load(pos, passed_max_size)
@@ -706,7 +714,10 @@ class SimFileDescriptorBase(SimStatePlugin):
             try:
                 size = self.state.solver.max(size, extra_constraints=(size <= self.state.libc.max_packet_size,))
             except SimSolverError:
-                size = self.state.solver.min(size)
+                try:
+                    size = self.state.solver.min(size)
+                except:
+                    size = self.state.libc.max_packet_size
             l.info("Concretizing symbolic %s size to %d", string, size)
 
         return size
