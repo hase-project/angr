@@ -29,4 +29,4 @@ class fileno(angr.SimProcedure):
             return fd
         except:
             # XXX: hase -> resymbolic
-            return self.state.se.BVS("fileno_fd", 32)
+            return self.state.se.Unconstrained("fileno_fd", 32, uninitialized=False)

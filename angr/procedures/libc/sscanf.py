@@ -20,4 +20,4 @@ class sscanf(FormatParser):
             items = fmt_str.interpret(2, self.arg, addr=data)
             return items
         except:
-            return self.state.se.BVS('sscanf', 32)
+            return self.state.se.Unconstrained('sscanf', 32, uninitialized=False)

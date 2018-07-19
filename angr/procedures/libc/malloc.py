@@ -15,6 +15,7 @@ class malloc(angr.SimProcedure):
         self.argument_types = {0: SimTypeLength(self.state.arch)}
         self.return_type = self.ty_ptr(SimTypeTop(sim_size))
 
+        '''
         if self.state.se.symbolic(sim_size):
             try:
                 size = self.state.se.max_int(sim_size)
@@ -28,3 +29,5 @@ class malloc(angr.SimProcedure):
         addr = self.state.libc.heap_location
         self.state.libc.heap_location += size
         return addr
+        '''
+        return self.state.se.Unconstrained('malloc_address', 64, uninitialized=False)

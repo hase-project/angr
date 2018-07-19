@@ -19,12 +19,12 @@ class fgetc(angr.SimProcedure):
                 simfd = self.state.posix.get_fd(fd)
             except:
                 # XXX: fileno may return symbolic value
-                return self.state.se.BVS("fgetc_char", 8)
+                return self.state.se.Unconstrained("fgetc_char", 32, uninitialized=False)
 
         if simfd is None:
             return -1
 
         data, real_length, = simfd.read_data(1)
-        return self.state.solver.If(real_length == 0, -1, data.zero_extend(self.state.arch.bits - 8))
+        return self.state.solver.If(real_length == 0, -1, data.zero_extend(24))
 
 getc = fgetc

@@ -165,4 +165,4 @@ class strncmp(angr.SimProcedure):
 
             return ret_expr
         except:
-            return self.state.se.BVS('stncmp', 32)
+            return self.state.se.Unconstrained('stncmp', 32, uninitialized=False)

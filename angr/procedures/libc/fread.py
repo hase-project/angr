@@ -29,5 +29,5 @@ class fread(angr.SimProcedure):
                     length = self.state.libc.max_variable_size
             else:
                 length = self.state.se.eval(length)
-            self.state.memory.store(dst, self.state.se.BVS('fread', length * 8))
-            return self.state.se.BVS('fread', 32)
+            self.state.memory.store(dst, self.state.se.Unconstrained('fread', length * 8, uninitialized=False))
+            return self.state.se.Unconstrained('fread_len', 32, uninitialized=False)
