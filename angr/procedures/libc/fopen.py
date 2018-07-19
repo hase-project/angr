@@ -32,36 +32,38 @@ class fopen(angr.SimProcedure):
 
     def run(self, p_addr, m_addr):
         strlen = angr.SIM_PROCEDURES['libc']['strlen']
-
-        p_strlen = self.inline_call(strlen, p_addr)
-        m_strlen = self.inline_call(strlen, m_addr)
-        print(p_strlen.max_null_index, m_strlen.max_null_index)
-        p_expr = self.state.memory.load(p_addr, p_strlen.max_null_index, endness='Iend_BE')
-        m_expr = self.state.memory.load(m_addr, m_strlen.max_null_index, endness='Iend_BE')
         try:
-            path = self.state.se.eval(p_expr, cast_to=str)
+            p_strlen = self.inline_call(strlen, p_addr)
+            m_strlen = self.inline_call(strlen, m_addr)
+            print(p_strlen.max_null_index, m_strlen.max_null_index)
+            p_expr = self.state.memory.load(p_addr, p_strlen.max_null_index, endness='Iend_BE')
+            m_expr = self.state.memory.load(m_addr, m_strlen.max_null_index, endness='Iend_BE')
+            try:
+                path = self.state.se.eval(p_expr, cast_to=str)
+            except:
+                # XXX: fopen on unsat path does wrong on max_null_index
+                p_expr = self.state.memory.load(p_addr, endness='Iend_BE')
+                path = self.state.se.eval(p_expr, cast_to=str)
+            mode = self.state.se.eval(m_expr, cast_to=str)
+
+            # TODO: handle append
+            fd = self.state.posix.open(path, mode_to_flag(mode))
+
+            if fd is None:
+                # if open failed return NULL
+                return 0
+            else:
+                # Allocate a FILE struct in heap
+                malloc = angr.SIM_PROCEDURES['libc']['malloc']
+                io_file_data = io_file_data_for_arch(self.state.arch)
+                file_struct_ptr = self.inline_call(malloc, io_file_data['size']).ret_expr
+
+                # Write the fd
+                fd_bvv = self.state.se.BVV(fd, 4 * 8) # int
+                self.state.memory.store(file_struct_ptr + io_file_data['fd'],
+                                        fd_bvv,
+                                        endness=self.state.arch.memory_endness)
+
+                return file_struct_ptr
         except:
-            # XXX: fopen on unsat path does wrong on max_null_index
-            p_expr = self.state.memory.load(p_addr, endness='Iend_BE')
-            path = self.state.se.eval(p_expr, cast_to=str)
-        mode = self.state.se.eval(m_expr, cast_to=str)
-
-        # TODO: handle append
-        fd = self.state.posix.open(path, mode_to_flag(mode))
-
-        if fd is None:
-            # if open failed return NULL
             return 0
-        else:
-            # Allocate a FILE struct in heap
-            malloc = angr.SIM_PROCEDURES['libc']['malloc']
-            io_file_data = io_file_data_for_arch(self.state.arch)
-            file_struct_ptr = self.inline_call(malloc, io_file_data['size']).ret_expr
-
-            # Write the fd
-            fd_bvv = self.state.se.BVV(fd, 4 * 8) # int
-            self.state.memory.store(file_struct_ptr + io_file_data['fd'],
-                                    fd_bvv,
-                                    endness=self.state.arch.memory_endness)
-
-            return file_struct_ptr

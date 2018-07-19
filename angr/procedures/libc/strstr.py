@@ -68,4 +68,4 @@ class strstr(angr.SimProcedure):
             self.state.add_constraints(*c)
             return r
         except:
-            return self.state.se.BVS('strstr', self.state.arch.bits)
+            return self.state.se.Unconstrained('strstr', self.state.arch.bits, uninitialized=False)

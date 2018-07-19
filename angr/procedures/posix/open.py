@@ -25,4 +25,4 @@ class open(angr.SimProcedure): #pylint:disable=W0622
                 return -1
             return fd
         except:
-            return self.state.se.BVS("open", 32)
+            return self.state.se.Unconstrained("open", 32, uninitialized=False)

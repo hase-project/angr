@@ -299,14 +299,14 @@ class FormatString(object):
                             status, i, num_bytes = self.parser._sim_atoi_inner(position, region, base=base, read_length=fmt_spec.length_spec)
                         except:
                             status = self.state.se.BoolS('failed')
-                            i = self.state.se.BVS('atoi', fmt_spec.size * 8)
+                            i = self.state.se.Unconstrained('atoi', fmt_spec.size * 8)
                             num_bytes = 0
                         # increase failed count if we were unable to parse it
                         failed = self.parser.state.se.If(status, failed, failed + 1)
                         position += num_bytes
                     elif fmt_spec.spec_type == 'c':
                         if unreliable:
-                            i = self.state.se.BVS('char', 8)
+                            i = self.state.se.Unconstrained('char', 8)
                         else:
                             i = region.load(position, 1)
                             i = i.zero_extend(bits - 8)

@@ -1445,7 +1445,9 @@ class CFGFast(ForwardAnalysis, CFGBase):    # pylint: disable=abstract-method
                 f.returning = len(f.endpoints) > 0  # pylint:disable=len-as-condition
 
         if self.project.arch.name in ('X86', 'AMD64', 'MIPS32'):
-            self._remove_redundant_overlapping_blocks()
+            # NOTE: sometimes NetworkXError, issue: https://github.com/angr/angr/issues/667
+            # self._remove_redundant_overlapping_blocks()
+            pass
 
         if self._normalize:
             # Normalize the control flow graph first before rediscovering all functions

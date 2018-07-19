@@ -21,4 +21,4 @@ class read(angr.SimProcedure):
 
             return simfd.read(dst, length)
         except:
-            return self.state.se.BVS('read', 32)
+            return self.state.se.Unconstrained('read', 32, uninitialized=False)

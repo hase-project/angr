@@ -62,4 +62,4 @@ class memcmp(angr.SimProcedure):
             else:
                 return definite_answer
         except:
-            return self.state.se.BVS('memcmp', 32)
+            return self.state.se.Unconstrained('memcmp', 32, uninitialized=False)

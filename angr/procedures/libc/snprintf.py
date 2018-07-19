@@ -25,5 +25,5 @@ class snprintf(FormatParser):
             # size_t has size arch.bits
             return self.state.se.BVV(out_str.size()/8, self.state.arch.bits)
         except:
-            return self.state.se.BVS('sprintf', self.state.arch.bits)
+            return self.state.se.Unconstrained('sprintf', self.state.arch.bits, uninitialized=False)
 

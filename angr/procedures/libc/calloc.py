@@ -15,6 +15,7 @@ class calloc(angr.SimProcedure):
 
         self.return_type = self.ty_ptr(SimTypeArray(SimTypeTop(sim_size), sim_nmemb))
 
+        '''
         if self.state.se.symbolic(sim_nmemb):
             # TODO: find a better way
             nmemb = self.state.se.max_int(sim_nmemb)
@@ -37,3 +38,5 @@ class calloc(angr.SimProcedure):
         self.state.memory.store(addr, v)
 
         return addr
+        '''
+        return self.state.se.Unconstrained('calloc_address', 64, uninitialized=False)
