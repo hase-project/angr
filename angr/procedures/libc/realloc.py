@@ -20,7 +20,6 @@ class realloc(angr.SimProcedure):
             self.state.se.eval(ptr) == 0:            
             return self.inline_call(malloc, size).ret_expr
 
-        '''
         try:
             self.state.add_constraints(size <= self.state.libc.max_variable_size)
             size_int = self.state.se.max_int(size)
@@ -40,5 +39,3 @@ class realloc(angr.SimProcedure):
         self.state.libc.heap_location += size_int
 
         return addr
-        '''
-        return self.state.se.Unconstrained('realloc_address', 64, uninitialized=False)
