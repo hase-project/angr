@@ -27,6 +27,6 @@ class fileno(angr.SimProcedure):
                                                             4 * 8,  # int
                                                             endness=self.state.arch.memory_endness))
             return fd
-        except:
+        except angr.SimUnsatError:
             # XXX: hase -> resymbolic
             return self.state.se.Unconstrained("fileno_fd", 32, uninitialized=False)

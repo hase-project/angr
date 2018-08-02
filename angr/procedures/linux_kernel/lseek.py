@@ -33,7 +33,7 @@ class lseek(angr.SimProcedure):
         #seek = self.state.se.eval(seek)
         try:
             simfd = self.state.posix.get_fd(fd)
-        except:
+        except angr.SimUnsatError:
             # XXX: hase resymbolic
             return self.state.se.Unconstrained('lseek', self.state.arch.bits, uninitialized=False)
         if simfd is None:

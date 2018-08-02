@@ -24,5 +24,5 @@ class open(angr.SimProcedure): #pylint:disable=W0622
             if fd is None:
                 return -1
             return fd
-        except:
+        except angr.SimUnsatError:
             return self.state.se.Unconstrained("open", 32, uninitialized=False)

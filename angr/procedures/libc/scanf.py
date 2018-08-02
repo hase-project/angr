@@ -23,5 +23,5 @@ class scanf(FormatParser):
 
             items = fmt_str.interpret(1, self.arg, simfd=simfd)
             return items
-        except:
+        except angr.SimUnsatError:
             return self.state.se.Unconstrained('scanf', 32, uninitialized=False)

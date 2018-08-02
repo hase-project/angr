@@ -17,7 +17,7 @@ class fgetc(angr.SimProcedure):
             fd = self.inline_call(fileno, stream).ret_expr
             try:
                 simfd = self.state.posix.get_fd(fd)
-            except:
+            except angr.SimUnsatError:
                 # XXX: fileno may return symbolic value
                 return self.state.se.Unconstrained("fgetc_char", 32, uninitialized=False)
 

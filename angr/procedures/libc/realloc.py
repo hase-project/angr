@@ -26,7 +26,7 @@ class realloc(angr.SimProcedure):
 
             l.debug("Size: %d", size_int)
             self.state.add_constraints(size_int == size)
-        except:
+        except angr.SimUnsatError:
             size_int = self.state.libc.max_variable_size
 
         self.argument_types = { 0: self.ty_ptr(SimTypeTop()),

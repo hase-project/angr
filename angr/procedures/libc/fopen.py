@@ -40,7 +40,7 @@ class fopen(angr.SimProcedure):
             m_expr = self.state.memory.load(m_addr, m_strlen.max_null_index, endness='Iend_BE')
             try:
                 path = self.state.se.eval(p_expr, cast_to=str)
-            except:
+            except angr.SimUnsatError:
                 # XXX: fopen on unsat path does wrong on max_null_index
                 p_expr = self.state.memory.load(p_addr, endness='Iend_BE')
                 path = self.state.se.eval(p_expr, cast_to=str)
@@ -65,5 +65,5 @@ class fopen(angr.SimProcedure):
                                         endness=self.state.arch.memory_endness)
 
                 return file_struct_ptr
-        except:
+        except angr.SimUnsatError:
             return 0

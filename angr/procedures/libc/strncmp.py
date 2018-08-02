@@ -164,5 +164,5 @@ class strncmp(angr.SimProcedure):
                 self.state.add_constraints(self.state.se.Or(match_case, nomatch_case, l0_case, empty_case))
 
             return ret_expr
-        except:
+        except angr.SimUnsatError:
             return self.state.se.Unconstrained('stncmp', 32, uninitialized=False)

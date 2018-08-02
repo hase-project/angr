@@ -67,5 +67,5 @@ class strstr(angr.SimProcedure):
 
             self.state.add_constraints(*c)
             return r
-        except:
+        except angr.SimUnsatError:
             return self.state.se.Unconstrained('strstr', self.state.arch.bits, uninitialized=False)

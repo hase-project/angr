@@ -58,7 +58,7 @@ class fdopen(angr.SimProcedure):
                                         endness=self.state.arch.memory_endness)
 
                 return file_struct_ptr
-        except:
+        except angr.SimUnsatError:
             fd = self.state.posix._pick_fd()
             new_filename = '/tmp/angr_implicit_%d' % self.state.posix.autotmp_counter
             self.state.posix.autotmp_counter += 1

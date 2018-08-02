@@ -23,7 +23,7 @@ class strchr(angr.SimProcedure):
             try:
                 max_sym = min(self.state.se.max_int(s_strlen.ret_expr), self.state.libc.max_symbolic_strchr)
                 a, c, i = self.state.memory.find(s_addr, c, s_strlen.max_null_index, max_symbolic_bytes=max_sym, default=0)
-            except:
+            except angr.SimUnsatError:
                 # XXX: reduce constraint
                 max_sym = self.state.libc.max_symbolic_strchr
                 a, c, i = self.state.memory.find(s_addr, c, self.state.libc.max_str_len, max_symbolic_bytes=max_sym, default=0)

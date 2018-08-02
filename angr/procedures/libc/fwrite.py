@@ -17,6 +17,6 @@ class fwrite(angr.SimProcedure):
             return -1
         try:
             return simfd.write(src, size*nmemb)
-        except:
+        except angr.SimUnsatError:
             # XXX: hase fallback
             return 0
