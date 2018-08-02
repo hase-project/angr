@@ -19,5 +19,5 @@ class sscanf(FormatParser):
             fmt_str = self._parse(1)    
             items = fmt_str.interpret(2, self.arg, addr=data)
             return items
-        except:
+        except angr.SimUnsatError:
             return self.state.se.Unconstrained('sscanf', 32, uninitialized=False)

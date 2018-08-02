@@ -19,7 +19,7 @@ class printf(FormatParser):
 
             stdout.write_data(out_str, out_str.size() / 8)
             return out_str.size() / 8
-        except:
+        except angr.SimUnsatError:
             return self.state.se.Unconstrained('printf', 32, uninitialized=False)
 
 class __printf_chk(FormatParser):
@@ -35,5 +35,5 @@ class __printf_chk(FormatParser):
 
             stdout.write_data(out_str, out_str.size() / 8)
             return out_str.size() / 8
-        except:
+        except angr.SimUnsatError:
             return self.state.se.Unconstrained('__printf_chk', 32, uninitialized=False)

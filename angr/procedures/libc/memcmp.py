@@ -61,5 +61,5 @@ class memcmp(angr.SimProcedure):
                 return ret_expr
             else:
                 return definite_answer
-        except:
+        except angr.SimUnsatError:
             return self.state.se.Unconstrained('memcmp', 32, uninitialized=False)

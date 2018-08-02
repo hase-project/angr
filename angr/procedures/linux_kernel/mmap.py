@@ -33,7 +33,7 @@ class mmap(angr.SimProcedure):
                 if size > self.state.libc.max_variable_size:
                     l.warn("mmap size requested of %d exceeds libc.max_variable_size. Using size %d instead.", size,self.state.libc.max_variable_size)
                     size = self.state.libc.max_variable_size
-            except:
+            except angr.SimUnsatError:
                 size = self.state.libc.max_variable_size
         else:
             size = self.state.se.eval(length)

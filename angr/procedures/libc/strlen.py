@@ -66,6 +66,6 @@ class strlen(angr.SimProcedure):
                     self.state.solver.add(result == rresult)
                     result = rresult
                 return result
-        except:
+        except angr.SimUnsatError:
             self.max_null_index = self.state.libc.max_str_len
             return self.state.se.Unconstrained('strlen', 64, uninitialized=False)

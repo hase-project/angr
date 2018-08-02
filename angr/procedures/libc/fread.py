@@ -20,12 +20,12 @@ class fread(angr.SimProcedure):
         try:
             ret = simfd.read(dst, size * nm)
             return self.state.se.If(self.state.se.Or(size == 0, nm == 0), 0, ret / size)
-        except:
+        except angr.SimUnsatError:
             length = size * nm
             if self.state.se.symbolic(length):
                 try:
                     length = max(self.state.se.min(length), min(self.state.se.max(length), 0x1000))
-                except:
+                except angr.SimUnsatError:
                     length = self.state.libc.max_variable_size
             else:
                 length = self.state.se.eval(length)
