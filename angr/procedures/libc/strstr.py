@@ -56,7 +56,7 @@ class strstr_old(angr.SimProcedure):
                     break
 
             cases.append([ self.state.solver.And(*exclusions), self.state.solver.BVV(0, self.state.arch.bits) ])
-            l.debug("... created %d cases", len(cases))
+            l.debug("... created %d cases", len(cases))y
             r = self.state.solver.ite_cases(cases, 0)
             c = [ self.state.solver.Or(*[c for c,_ in cases]) ]
         else:
@@ -75,6 +75,6 @@ class strstr_old(angr.SimProcedure):
 class strstr(strstr_old):
     def run(self, haystack_addr, needle_addr, haystack_strlen=None, needle_strlen=None):
         try:
-            super().run(haystack_strlen, needle_addr, haystack_strlen, needle_strlen)
+            return super().run(haystack_addr, needle_addr, haystack_strlen, needle_strlen)
         except angr.SimUnsatError:
             return self.state.solver.Unconstrained('strstr', self.state.arch.bits, uninitialized=False)
