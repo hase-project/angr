@@ -56,7 +56,7 @@ class strstr_old(angr.SimProcedure):
                     break
 
             cases.append([ self.state.solver.And(*exclusions), self.state.solver.BVV(0, self.state.arch.bits) ])
-            l.debug("... created %d cases", len(cases))y
+            l.debug("... created %d cases", len(cases))
             r = self.state.solver.ite_cases(cases, 0)
             c = [ self.state.solver.Or(*[c for c,_ in cases]) ]
         else:
