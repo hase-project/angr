@@ -294,8 +294,13 @@ class Blade(object):
         else:
             exit_stmt = self._get_irsb(run).statements[exit_stmt_idx]
 
-            if type(exit_stmt.guard) is pyvex.IRExpr.RdTmp:
-                temps.add(exit_stmt.guard.tmp)
+            try:
+                if type(exit_stmt.guard) is pyvex.IRExpr.RdTmp:
+                    temps.add(exit_stmt.guard.tmp)
+            except AttributeError:
+                next_expr = self._get_irsb(run).next
+                if type(next_expr) is pyvex.IRExpr.RdTmp:
+                    temps.add(next_expr.tmp)
 
             # Put it in our slice
             irsb_addr = self._get_addr(run)
