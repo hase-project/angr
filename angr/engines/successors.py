@@ -181,8 +181,8 @@ class SimSuccessors(object):
                 else:
                     ret_addr = state.solver.eval(state.regs._lr)
             except SimSolverModeError:
-                # Use the address for UnresolvableTarget instead.
-                ret_addr = state.project.simos.unresolvable_target
+                # Use the address for UnresolvableCallTarget instead.
+                ret_addr = state.project.simos.unresolvable_call_target
 
             try:
                 state_addr = state.addr
@@ -288,7 +288,11 @@ class SimSuccessors(object):
             _max_targets = state.options.symbolic_ip_max_targets
             _max_jumptable_targets = state.options.jumptable_symbolic_ip_max_targets
             try:
-                if o.KEEP_IP_SYMBOLIC in state.options:
+                if o.NO_IP_CONCRETIZATION in state.options:
+                    # Don't try to concretize the IP
+                    cond_and_targets = [ (claripy.true, target) ]
+                    max_targets = 0
+                elif o.KEEP_IP_SYMBOLIC in state.options:
                     s = claripy.Solver()
                     addrs = s.eval(target, _max_targets + 1, extra_constraints=tuple(state.ip_constraints))
                     if len(addrs) > _max_targets:
